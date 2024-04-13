@@ -1,5 +1,6 @@
 package com.asap.openrun.doamin.user.dto.request;
 
+import com.asap.openrun.global.utils.encryption.EncoderService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,24 @@ public class UserRequest {
     private String nickname;
     private String phoneNumber;
 
+    public void encoded(EncoderService encryptionService) {
+      this.password = encryptionService.encoded(asapName, password);
+    }
 
+  }
+
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class LoginRequest {
+
+    private String asapName;
+    private String password;
+
+
+    public void encoded(EncoderService encryptionService) {
+      this.password = encryptionService.encoded(asapName, password);
+    }
   }
 
 }

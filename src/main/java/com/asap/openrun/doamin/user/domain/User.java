@@ -1,6 +1,5 @@
 package com.asap.openrun.doamin.user.domain;
 
-import com.asap.openrun.doamin.user.dto.request.UserRequest;
 import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
 import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
@@ -27,7 +26,7 @@ public class User extends UserBase {
   @Builder
   private User(String name, String asapName, String password, Role role, String nickname,
       String phoneNumber) {
-    super(name, asapName, password, role);
+    super(name, asapName, password);
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
   }
