@@ -18,17 +18,17 @@ public class UserService {
 
   private final HttpSession session;
   private final UserRepository userRepo;
-  private final EncoderService ecodeder;
+  private final EncoderService encoder;
 
   @Transactional
   public void signUp(SignUpRequest request) {
-    request.encoded(ecodeder);
+    request.passwordEncoded(encoder);
     userRepo.save(User.of(request));
   }
 
   @Transactional
   public void login(LoginRequest request) {
-    request.encoded(ecodeder);
+    request.passwordEncoded(encoder);
     User user = userRepo.findByAsapName(request.getAsapName());
     session.setAttribute("SESSION_ID", request.getAsapName());
     session.setAttribute("ROLE", user.getRole());
@@ -40,7 +40,7 @@ public class UserService {
       log.info("로그인 정보가 없습니다.");
     } else {
       log.info("로그아웃 요청자 = {}", session.getAttribute("SESSION_ID"));
-      session.removeAttribute("SESSION_ID");
+      session.invalidate();
     }
   }
 }
