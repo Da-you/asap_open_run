@@ -4,6 +4,7 @@ import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
 import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -24,14 +25,14 @@ public class User extends UserBase {
   private String phoneNumber;
 
   @Builder
-  private User(String name, String asapName, String password, Role role, String nickname,
+  private User(String name, String asapName, String password, String nickname,
       String phoneNumber) {
-    super(name, asapName, password);
+    super(name, asapName, password,Role.USER);
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
+
   }
 
-  @Builder
   public static User of(SignUpRequest request) {
     return User.builder()
         .name(request.getName())

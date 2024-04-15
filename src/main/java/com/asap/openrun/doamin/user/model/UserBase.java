@@ -39,10 +39,11 @@ public abstract class UserBase extends BaseTimeEntity {
   @Enumerated(value = EnumType.STRING)
   private Role role;
 
-  protected UserBase(String name, String asapName, String password) {
+  protected UserBase(String name, String asapName, String password, Role role) {
     this.name = name;
     this.asapName = asapName;
     this.password = password;
-    this.role =Role.USER;
+    this.role =role;
   }
+
 }
