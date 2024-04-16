@@ -26,7 +26,7 @@ public class Product extends BaseTimeEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @JoinColumn(name = "brand_id")
+  @JoinColumn(name = "brand_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Brand brand;
 
@@ -41,6 +41,10 @@ public class Product extends BaseTimeEntity {
 
   @Column(nullable = false)
   private Integer stock;
+
+  private Integer salesStock;
+
+  private Integer remainingStock;
 
   @Column(nullable = false)
   private String address;
@@ -57,13 +61,15 @@ public class Product extends BaseTimeEntity {
 
   @Builder
   private Product(Brand brand, String serialNumber, String productName, Integer price,
-      Integer stock,
+      Integer stock, Integer remainingStock, Integer salesStock,
       String address, String content, LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
     this.brand = brand;
     this.serialNumber = serialNumber;
     this.productName = productName;
     this.price = price;
     this.stock = stock;
+    this.remainingStock = remainingStock;
+    this.salesStock = salesStock;
     this.address = address;
     this.content = content;
     this.eventStartDate = eventStartDate;
@@ -78,10 +84,20 @@ public class Product extends BaseTimeEntity {
         .productName(request.getProductName())
         .price(request.getPrice())
         .stock(request.getStock())
+        .remainingStock(request.getStock())
         .address(request.getAddress())
         .content(request.getContent())
         .eventStartDate(request.getEventStartDate())
         .eventEndDate(request.getEventEndDate())
         .build();
   }
+
+
+  public void decrease() {
+    if (this.stock.equals(this.salesStock)) {
+      throw new IllegalArgumentException("매진 된 상품 입니다.");
+    }
+    this.salesStock++;
+  }
+
 }

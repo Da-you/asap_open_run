@@ -43,4 +43,8 @@ public class UserService {
       session.invalidate();
     }
   }
+
+  public String getLoginUser() {
+    return (String) session.getAttribute("SESSION_ID");
+  }
 }

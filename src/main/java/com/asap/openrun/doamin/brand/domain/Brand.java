@@ -33,6 +33,7 @@ public class Brand extends UserBase {
     this.isAuth = isAuth;
   }
 
+  @Builder
   public static Brand of(BrandCreateRequest request) {
     return Brand.builder()
         .name(request.getName())

@@ -1,17 +1,17 @@
 package com.asap.openrun.doamin.user.controller;
 
-import com.asap.openrun.doamin.user.dto.request.UserRequest.LoginRequest;
-import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.*;
+import com.asap.openrun.doamin.user.dto.response.UserResponse.*;
 import com.asap.openrun.doamin.user.service.UserService;
+import com.asap.openrun.doamin.user.service.UserTicketService;
 import com.asap.openrun.global.annotation.LoginUser;
+import com.asap.openrun.global.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 @Tag(name = "/v1/users")
 @RestController
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserApiController {
 
   private final UserService userService;
+  private final UserTicketService userTicketService;
 
 
   @Operation(
@@ -39,10 +40,36 @@ public class UserApiController {
   }
 
   @DeleteMapping("/logout")
-  public void logout(@LoginUser Long userId){
+  public void logout(@LoginUser String asapName) {
     userService.logout();
   }
 
+  @PostMapping("/apply/{serialNumber}")
+  public void createTicketing(@LoginUser String asapName, @PathVariable String serialNumber) {
+    userTicketService.createTicketing(asapName, serialNumber);
+  }
 
+  @GetMapping("/histories")
+  public ApiResponse<List<UserTicket>> getHistories(@LoginUser String asapName) {
+    return ApiResponse.ok(userTicketService.getHistories(asapName));
+  }
+
+  @GetMapping("/histories/{historyId}")
+  public ApiResponse<UserTicket> getHistory(@LoginUser String asapName,
+      @PathVariable Long historyId) {
+    return ApiResponse.ok(userTicketService.getHistory(asapName, historyId));
+  }
+
+  @DeleteMapping("/histories/{historyId}")
+  public void cancelHistory(@LoginUser String asapName,
+      @PathVariable Long historyId) {
+    userTicketService.cancelTicket(asapName, historyId);
+  }
+
+  @PatchMapping("/histories/{historyId}")
+  public void receiveProduct(@LoginUser String asapName,
+      @PathVariable Long historyId) {
+    userTicketService.receiveProduct(asapName, historyId);
+  }
 
 }
