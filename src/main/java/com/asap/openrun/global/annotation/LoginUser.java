@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 // @LoginUser : 로그인한 사용자
-@Target(value = ElementType.PARAMETER)
-@Retention(value = RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface LoginUser {
 
 }

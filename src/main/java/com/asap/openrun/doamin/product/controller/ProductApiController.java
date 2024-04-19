@@ -17,8 +17,8 @@ public class ProductApiController {
   private final ProductService productService;
 
   @PostMapping("/register")
-  public void register(@LoginUser Long brandId, @RequestBody ProductRegisterRequest request) {
-    productService.registerProduct(brandId, request);
+  public void register(@LoginUser String asapName , @RequestBody ProductRegisterRequest request) {
+    productService.registerProduct(asapName, request);
   }
 
 

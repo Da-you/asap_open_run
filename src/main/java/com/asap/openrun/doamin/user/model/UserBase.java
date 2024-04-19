@@ -24,7 +24,6 @@ public abstract class UserBase extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id", nullable = false)
   private Long id;
 
   @Column(name = "name", nullable = false)
