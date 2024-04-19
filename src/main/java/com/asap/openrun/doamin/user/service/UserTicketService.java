@@ -27,33 +27,44 @@ public class UserTicketService {
 
   @Transactional
   public void createTicketing(String asapName, String serialNumber) {
-    User user = userRepo.findByAsapName(asapName);
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-    Product product = productRepo.findBySerialNumber(serialNumber);
-    if (!product.isOpen()) {
-      throw new BusinessException(ErrorCode.SERVER_ERROR); // 티켓팅 오픈전
+    Product product = productRepo.findBySerialNumberWithPessimisticLock(serialNumber);
+    if (product== null){
+      throw new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND);
     }
-    if (product.getRemainingStock() == 0) {
+    if (!product.isOpen()) {
+      throw new BusinessException(ErrorCode.EVENT_IS_NOT_OPEN); // 티켓팅 오픈전
+    }
+    if (product.getStock() == 0) {
       throw new BusinessException(ErrorCode.SERVER_ERROR);
     }
     product.decrease();
-    log.info("호출!");
     userHistoryRepo.save(UserProductHistory.from(user, product));
   }
 
   @Transactional
   public void receiveProduct(String asapName, Long historyId) {
-    UserProductHistory history = userHistoryRepo.findById(historyId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.SERVER_ERROR));
-
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    UserProductHistory history = getUserProductHistory(historyId, user);
     history.setIsReceive();
+  }
+
+  private UserProductHistory getUserProductHistory(Long historyId, User user) {
+    UserProductHistory history = userHistoryRepo.findByUserAndId(user, historyId);
+    if (history == null) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+    }
+    return history;
   }
 
   // 내 예메 내역 리스트
   @Transactional(readOnly = true)
   public List<UserTicket> getHistories(String asapName) {
-    User user = userRepo.findByAsapName(asapName);
-
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     List<UserProductHistory> all = userHistoryRepo.findAllByUser(user);
 
     return all.stream()
@@ -72,9 +83,10 @@ public class UserTicketService {
   // 내 예매 내역 단건 조회
   @Transactional(readOnly = true)
   public UserTicket getHistory(String asapName, Long historyId) {
-    User user = userRepo.findByAsapName(asapName);
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-    UserProductHistory history = userHistoryRepo.findByUserAndId(user, historyId);
+    UserProductHistory history = getUserProductHistory(historyId, user);
 
     return UserTicket.builder()
         .brandName(history.getProduct().getBrand().getBrandName())
@@ -88,9 +100,10 @@ public class UserTicketService {
   // 예매 취소
   @Transactional
   public void cancelTicket(String asapName, Long historyId) {
-    User user = userRepo.findByAsapName(asapName);
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-    UserProductHistory history = userHistoryRepo.findByUserAndId(user, historyId);
+    UserProductHistory history = getUserProductHistory(historyId, user);
 
     history.softDelete();
   }
