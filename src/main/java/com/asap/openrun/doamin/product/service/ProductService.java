@@ -22,13 +22,25 @@ public class ProductService {
 
   @Transactional
   public void registerProduct(String asapName, ProductRegisterRequest request) {
-    Brand brand = brandRepo.findByAsapName(asapName);
-    log.info(asapName);
-    log.info(brand.getAsapName());
-//    if (!brand.isAuth()) {
-//      throw new IllegalArgumentException("상품 등록 권한이 없습니다.");
-//    }
+    Brand brand = brandRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    // TODO : 임시 주석 처리(어드민 유저 생성떄까지 잠시 보류)
+//    checkAuthorization(brand);
+    existsBySerialNumber(request.getSerialNumber());
+
     productRepo.save(Product.of(brand, request));
+  }
+
+  private void existsBySerialNumber(String serialNumber) {
+    if (productRepo.existsBySerialNumber(serialNumber)) {
+      throw new BusinessException(ErrorCode.SERIALNUMBER_ALREADY_EXISTS);
+    }
+  }
+
+  private static void checkAuthorization(Brand brand) {
+    if (!brand.isAuth()) {
+      throw new BusinessException(ErrorCode.UNAUTHORIZED_BRAND);
+    }
   }
 
 }

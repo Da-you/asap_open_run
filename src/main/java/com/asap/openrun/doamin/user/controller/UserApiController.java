@@ -45,7 +45,7 @@ public class UserApiController {
   }
 
   @PostMapping("/apply/{serialNumber}")
-  public void createTicketing(@LoginUser String asapName, @PathVariable String serialNumber) {
+  public void createTicketing( String asapName, @PathVariable String serialNumber) {
     userTicketService.createTicketing(asapName, serialNumber);
   }
 

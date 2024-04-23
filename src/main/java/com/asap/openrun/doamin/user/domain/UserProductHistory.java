@@ -33,7 +33,7 @@ public class UserProductHistory extends BaseTimeEntity {
   @JoinColumn(name = "product_id")
   private Product product;
 
-  @Column(nullable = false)
+
   private String ticketNumber;
 
   private boolean isDeleted = false;
