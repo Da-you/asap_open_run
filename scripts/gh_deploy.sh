@@ -2,7 +2,7 @@
 PROJECT_NAME="asap_open_run"
 JAR_PATH="/home/ec2-user/asap_open_run/deploy/*.jar"
 
-DEPLOY_PATH="/home/ec2-user/$PROJECT_NAME/deploy"
+DEPLOY_PATH="/home/ec2-user/$PROJECT_NAME/"
 DEPLOY_LOG_PATH="$DEPLOY_PATH/deploy.log"
 DEPLOY_ERR_LOG_PATH="$DEPLOY_PATH/deploy_err.log"
 APPLICATION_LOG_PATH="$DEPLOY_PATH/application.log"
