@@ -38,3 +38,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// -plain 파일 생성 비활성
+jar {
+	enabled = false
+}

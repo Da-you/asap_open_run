@@ -9,6 +9,7 @@ env:
   BUCKET_NAME: codedeploy-asap
   DEPLOY_APPLICATION_NAME: asap-deploy
   DEPLOY_GROUP_NAME: deploy-group
+  RESOURCE_PATH : ./src/main/resources/application.yml
 
 jobs:
   build:
@@ -23,7 +24,15 @@ jobs:
         with:
           java-version: 17
 
-      - name: Grant excute permission for gradlew
+      - name: Set yml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          datasource.username: ${{ secrets.RDS_USERNAME }}
+          datasource.password: ${{ secrets.RDS_PASSWORD }}
+
+      - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
 
