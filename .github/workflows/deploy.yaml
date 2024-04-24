@@ -9,7 +9,7 @@ env:
   BUCKET_NAME: codedeploy-asap
   DEPLOY_APPLICATION_NAME: asap-deploy
   DEPLOY_GROUP_NAME: deploy-group
-  RESOURCE_PATH: ./src/main/resources/application.yml
+  RESOURCE_PATH: ./src/main/resources/application-prod.yml
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
       - name: Set yaml file
         uses: microsoft/variable-substitution@v1
         with:
-          files: ./src/main/resources/application.yml
+          files: ${{ env.RESOURCE_PATH }}
         env:
           spring.datasource.url: ${{ secrets.RDS_HOST }}
           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
