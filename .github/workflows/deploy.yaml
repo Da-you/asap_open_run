@@ -3,7 +3,7 @@ name: CI-CD
 on:
   push:
     branches:
-      - CICD
+      - main
 
 env:
   BUCKET_NAME: codedeploy-asap
