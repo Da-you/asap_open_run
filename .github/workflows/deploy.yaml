@@ -9,7 +9,7 @@ env:
   BUCKET_NAME: codedeploy-asap
   DEPLOY_APPLICATION_NAME: asap-deploy
   DEPLOY_GROUP_NAME: deploy-group
-  RESOURCE_PATH: ./src/main/resources/application.yaml
+  RESOURCE_PATH: ./asap_open_run/src/main/resources/application.yaml
 
 jobs:
   build:
