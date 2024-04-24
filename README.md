@@ -7,3 +7,5 @@
 # 부가 기능
 1.회원가입이 가능하다.
 
+# Deploy
+Github actions
