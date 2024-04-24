@@ -1,6 +1,6 @@
 #!/bin/bash
 PROJECT_NAME="asap_open_run"
-JAR_PATH="/home/ec2-user/asap_open_run/deploy/*.jar"
+JAR_PATH="/home/ec2-user/asap_open_run/build/libs/*.jar"
 
 DEPLOY_PATH="/home/ec2-user/$PROJECT_NAME/"
 DEPLOY_LOG_PATH="$DEPLOY_PATH/deploy.log"
