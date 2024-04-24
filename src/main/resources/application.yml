@@ -51,7 +51,7 @@ spring:
       on-profile: prod
 
   datasource:
-    url: "jdbc:mysql://asap.cj4kigo82hjr.ap-northeast-2.rds.amazonaws.com:3306/asap"
+    url: "jdbc:mysql://${RDS_HOST}:3306/asap"
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
