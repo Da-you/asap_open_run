@@ -23,6 +23,9 @@ spring:
       path: /h2-console
 ---
 spring:
+  servlet:
+    session:
+      timeout: 3600
   config:
     activate:
       on-profile: dev
@@ -35,7 +38,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       properties:
         hibernate:
           format_sql: true
@@ -58,7 +61,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       properties:
         hibernate:
           format_sql: true

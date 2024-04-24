@@ -4,7 +4,6 @@ import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
 import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;

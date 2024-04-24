@@ -14,6 +14,7 @@ import jakarta.persistence.InheritanceType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 // 사용자 구분을 일반 사용자, 브랜드 사용자, 관리자 사용자로 나눌 예정으로 공통 정보를 따로 빼두고 상속관계 매핑중 Join 전략을 사용
 @Entity
 @Getter
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 public abstract class UserBase extends BaseTimeEntity {
 
   @Id
+  @Column(nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -42,7 +44,7 @@ public abstract class UserBase extends BaseTimeEntity {
     this.name = name;
     this.asapName = asapName;
     this.password = password;
-    this.role =role;
+    this.role = role;
   }
 
 }

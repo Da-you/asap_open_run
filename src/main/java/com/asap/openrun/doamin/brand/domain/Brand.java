@@ -5,6 +5,7 @@ import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "brand")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Brand extends UserBase {
 
