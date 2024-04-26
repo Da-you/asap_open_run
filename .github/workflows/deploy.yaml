@@ -1,0 +1,65 @@
+name: CI-CD
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  BUCKET_NAME: codedeploy-asap
+  DEPLOY_APPLICATION_NAME: asap-deploy
+  DEPLOY_GROUP_NAME: deploy-group
+  RESOURCE_PATH: ./src/main/resources/application-prod.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Set yaml file
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          spring.datasource.url: ${{ secrets.RDS_HOST }}
+          spring.datasource.username: ${{ secrets.RDS_USERNAME }}
+          spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+        shell: bash
+
+      - name: Make zip file
+        run: zip -r ./$GITHUB_SHA .
+        shell: bash
+
+      - name: Configuration AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to s3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$GITHUB_SHA.zip
+
+      - name: Code Deploy
+        run: |
+          aws deploy create-deployment \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --application-name ${{ env.DEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ env.DEPLOY_GROUP_NAME }} \
+          --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+      
