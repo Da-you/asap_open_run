@@ -39,4 +39,38 @@ public class UserRequest {
     }
   }
 
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdateNicknameRequest {
+
+    private String nickname;
+
+  }
+
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdatePhoneNumberRequest {
+
+    private String phoneNumber;
+
+  }
+
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdatePasswordRequest {
+
+    private String asapName;
+
+    private String beforePassword;
+    private String afterPassword;
+
+    public void passwordEncoded(EncoderService encryptionService) {
+      this.beforePassword = encryptionService.encoded(asapName, beforePassword);
+      this.afterPassword = encryptionService.encoded(asapName, afterPassword);
+    }
+  }
+
 }

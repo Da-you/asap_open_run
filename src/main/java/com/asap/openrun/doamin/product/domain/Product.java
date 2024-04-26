@@ -1,7 +1,7 @@
 package com.asap.openrun.doamin.product.domain;
 
 import com.asap.openrun.doamin.brand.domain.Brand;
-import com.asap.openrun.doamin.product.dto.request.ProductDto.ProductRegisterRequest;
+import com.asap.openrun.doamin.product.dto.request.ProductRequest.ProductRegisterRequest;
 import com.asap.openrun.global.common.response.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -96,6 +96,23 @@ public class Product extends BaseTimeEntity {
     }
     this.stock--;
     this.salesStock++;
+  }
+
+  public Integer getRemainingStock(Integer stock, Integer salesStock) {
+    stock = this.stock;
+    salesStock = this.getSalesStock();
+    return stock - salesStock;
+  }
+
+  public void updateProductName(String productName){
+    this.productName = productName;
+  }
+  public void updateProductPrice(Integer price){
+    this.price = price;
+  }
+  public void updateStock(Integer additionalStock
+  ){
+    this.stock += additionalStock;
   }
 
 }

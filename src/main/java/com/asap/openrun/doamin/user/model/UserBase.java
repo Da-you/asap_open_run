@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 public abstract class UserBase extends BaseTimeEntity {
@@ -35,7 +36,7 @@ public abstract class UserBase extends BaseTimeEntity {
   private String asapName;
 
   @Column(name = "password", nullable = false)
-  private String password;
+  protected String password;
 
   @Enumerated(value = EnumType.STRING)
   private Role role;

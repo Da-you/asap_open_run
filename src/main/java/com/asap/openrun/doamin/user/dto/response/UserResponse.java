@@ -23,5 +23,15 @@ public class UserResponse {
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;
   }
+  @Builder
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UserMyPageResponse{
+    private String username;
+    private String asapName;
+    private String nickname;
+    private String phoneNumber;
+  }
 
 }
