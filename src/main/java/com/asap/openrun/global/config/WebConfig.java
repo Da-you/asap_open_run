@@ -27,13 +27,14 @@ public class WebConfig implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor( logCheckInterceptor)
+    registry.addInterceptor(logCheckInterceptor)
         .order(1)
         .addPathPatterns("/**")//모든 요청 /**에 대해 적용
-        .excludePathPatterns("/error");//제외할 요청
+        .excludePathPatterns("/css/**", "/*.ico", "/error");//제외할 요청
     registry.addInterceptor(loginCheckInterceptor)
         .order(2)
         .addPathPatterns("/**")
-        .excludePathPatterns("/*/*/sign-up", "/*/*/login", "/swagger-ui/index.html");
+        .excludePathPatterns("/*/*/sign-up", "/*/*/login", "/swagger-ui/index.html", "/css/**",
+            "/*.ico", "/error");
   }
 }
