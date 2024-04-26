@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 
-@Tag(name = "/v1/users",
+@Tag(name = "일반 사용자 API",
     description = "일반 사용자 api controller 입니다."
 )
 @RestController

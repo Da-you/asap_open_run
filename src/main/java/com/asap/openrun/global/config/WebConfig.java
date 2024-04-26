@@ -35,6 +35,6 @@ public class WebConfig implements WebMvcConfigurer {
         .order(2)
         .addPathPatterns("/**")
         .excludePathPatterns("/*/*/sign-up", "/*/*/login", "/swagger-ui/**", "/css/**",
-            "/*.ico", "/error");
+            "/*.ico", "/error","/v3/api-docs/**");
   }
 }
