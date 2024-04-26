@@ -1,6 +1,6 @@
 package com.asap.openrun.doamin.brand.domain;
 
-import com.asap.openrun.doamin.brand.dto.request.BrandDto.BrandCreateRequest;
+import com.asap.openrun.doamin.brand.dto.request.BrandRequest.BrandCreateRequest;
 import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
 import jakarta.persistence.Column;
@@ -46,5 +46,13 @@ public class Brand extends UserBase {
         .isAuth(false)
         .build();
 
+  }
+
+  public void updatedBrandName(String brandName) {
+    this.brandName = brandName;
+  }
+
+  public void updatePassword(String password) {
+    this.password = password;
   }
 }

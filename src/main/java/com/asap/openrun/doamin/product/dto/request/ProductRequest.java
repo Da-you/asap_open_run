@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class ProductDto {
+public class ProductRequest {
 
   @Getter
   @AllArgsConstructor
@@ -23,6 +23,29 @@ public class ProductDto {
     private LocalDateTime eventEndDate;
 
 
+  }
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdateProductName {
+
+    private String productName;
+  }
+
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdateProductPrice {
+
+    private Integer price;
+  }
+
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
+  public static class UpdateProductStock {
+
+    private Integer additionalStock;
   }
 
 }

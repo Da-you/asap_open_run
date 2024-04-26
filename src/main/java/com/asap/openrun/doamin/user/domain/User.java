@@ -1,6 +1,9 @@
 package com.asap.openrun.doamin.user.domain;
 
 import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdateNicknameRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdatePasswordRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdatePhoneNumberRequest;
 import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.model.UserBase;
 import jakarta.persistence.Column;
@@ -26,7 +29,7 @@ public class User extends UserBase {
   @Builder
   private User(String name, String asapName, String password, String nickname,
       String phoneNumber) {
-    super(name, asapName, password,Role.USER);
+    super(name, asapName, password, Role.USER);
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
 
@@ -40,5 +43,17 @@ public class User extends UserBase {
         .nickname(request.getNickname())
         .phoneNumber(request.getPhoneNumber())
         .build();
+  }
+
+  public void updateNickname(UpdateNicknameRequest request) {
+    this.nickname = request.getNickname();
+  }
+
+  public void updatePhoneNumber(UpdatePhoneNumberRequest request) {
+    this.phoneNumber = request.getPhoneNumber();
+  }
+
+  public void updatePassword(UpdatePasswordRequest request) {
+    this.password = request.getAfterPassword();
   }
 }

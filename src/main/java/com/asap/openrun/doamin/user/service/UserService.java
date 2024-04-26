@@ -3,11 +3,17 @@ package com.asap.openrun.doamin.user.service;
 import com.asap.openrun.doamin.user.domain.User;
 import com.asap.openrun.doamin.user.dto.request.UserRequest.LoginRequest;
 import com.asap.openrun.doamin.user.dto.request.UserRequest.SignUpRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdateNicknameRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdatePasswordRequest;
+import com.asap.openrun.doamin.user.dto.request.UserRequest.UpdatePhoneNumberRequest;
+import com.asap.openrun.doamin.user.dto.response.UserResponse.UserMyPageResponse;
+import com.asap.openrun.doamin.user.model.Role;
 import com.asap.openrun.doamin.user.repository.UserRepository;
 import com.asap.openrun.global.common.error.BusinessException;
 import com.asap.openrun.global.common.error.ErrorCode;
 import com.asap.openrun.global.utils.encryption.EncoderService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,10 +59,8 @@ public class UserService {
   @Transactional
   public void login(LoginRequest request) {
     existsByAsapNameAndPassword(request);
-    User user = userRepo.findByAsapName(request.getAsapName())
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    session.setAttribute("SESSION_ID", user.getAsapName());
-    session.setAttribute("ROLE", user.getRole());
+    session.setAttribute("SESSION_ID", request.getAsapName());
+    session.setAttribute("ROLE", Role.USER);
   }
 
   private void existsByAsapNameAndPassword(LoginRequest request) {
@@ -75,6 +79,59 @@ public class UserService {
       session.invalidate();
     }
   }
+
+  @Transactional(readOnly = true)
+  public UserMyPageResponse getMyPage(String asapName) {
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    return UserMyPageResponse.builder()
+        .username(user.getName())
+        .asapName(asapName)
+        .nickname(user.getNickname())
+        .phoneNumber(user.getPhoneNumber())
+        .build();
+  }
+
+  @Transactional
+  public void updateNickname(String asapName, UpdateNicknameRequest request) {
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    String beforeNickname = user.getNickname();
+    if (beforeNickname.equals(request.getNickname())) {
+      throw new BusinessException(ErrorCode.DUPLICATE_NICKNAME);
+    }
+    existsByNickname(request.getNickname());
+    user.updateNickname(request);
+  }
+
+  @Transactional
+  public void updatePhoneNumber(String asapName, UpdatePhoneNumberRequest request) {
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    String beforePhoneNumber = user.getPhoneNumber();
+    if (beforePhoneNumber.equals(request.getPhoneNumber())) {
+      throw new BusinessException(ErrorCode.DUPLICATE_PHONE_NUMBER);
+    }
+    user.updatePhoneNumber(request);
+  }
+
+  @Transactional
+  public void updatedPassword(String asapName, UpdatePasswordRequest request) {
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+    String beforePassword = request.getBeforePassword();
+    String afterPassword = request.getAfterPassword();
+    if (!userRepo.existsByAsapNameAndPassword(request.getAsapName(), beforePassword)) {
+      throw new BusinessException(ErrorCode.USER_NOT_FOUND);  // 변경 필요
+    }
+    if (beforePassword.equals(afterPassword)) {
+      throw new BusinessException(ErrorCode.DUPLICATE_ASAP_NAME); // 변경 필요
+    }
+    user.updatePassword(request);
+
+  }
+
 
   public String getLoginUser() {
     return (String) session.getAttribute("SESSION_ID");
