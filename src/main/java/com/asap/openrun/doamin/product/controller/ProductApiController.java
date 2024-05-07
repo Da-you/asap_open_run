@@ -6,12 +6,8 @@ import com.asap.openrun.global.annotation.LoginUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "상품 API",
     description = "상품 관련 api controller 입니다."
@@ -28,8 +24,9 @@ public class ProductApiController {
       description = "입력 정보로는 시리얼넘버, 상품명,가격,재고, 행사 주소, 상품 내용, 행사 일정을 입력 받습니다. "
   )
   @PostMapping("/register")
-  public void register(@LoginUser String asapName, @RequestBody ProductRegisterRequest request) {
-    productService.registerProduct(asapName, request);
+  public void register(@LoginUser String asapName, @RequestPart ProductRegisterRequest request,
+      @RequestPart(required = false) MultipartFile file) {
+    productService.registerProduct(asapName, request, file);
   }
 
   @Operation(
@@ -63,6 +60,17 @@ public class ProductApiController {
       @RequestBody
       UpdateProductStock request) {
     productService.updateProductStock(asapName, serialNumber, request);
+  }
+
+  @Operation(
+      summary = "상품 이미지 변경 API",
+      description = "시리얼넘버로 상품을 조회하여 입력받은 이미지의 url로 상품의 이미지를 변경 합니다. "
+  )
+  @PatchMapping("/image/{serialNumber}")
+  public void updateProductImage(@LoginUser String asapName, @PathVariable String serialNumber,
+      @RequestPart UpdateProductImage request,
+      @RequestPart(required = false) MultipartFile productImage) {
+    productService.updateProductImage(asapName, serialNumber, request, productImage);
   }
 
 

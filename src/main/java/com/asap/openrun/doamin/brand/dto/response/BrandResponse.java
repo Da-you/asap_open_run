@@ -17,7 +17,6 @@ public class BrandResponse {
     private String serialNumber;
     private String productName;
     private Integer price;
-    private String thumbNail;
     private Integer remainingStock;
 
   }

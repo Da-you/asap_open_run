@@ -17,4 +17,15 @@ spring:
         hibernate:
           format_sql: true
           show_sql: true
-          dialect: org.hibernate.dial
+          dialect: org.hibernate.dialect
+
+cloud:
+  aws:
+    s3:
+      bucket: ${IMAGE_BUCKET}
+      resize-bucket: ${RESIZE_BUCKET}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${ACCESS_KEY}
+      secretKey: ${SECRET_KEY}
