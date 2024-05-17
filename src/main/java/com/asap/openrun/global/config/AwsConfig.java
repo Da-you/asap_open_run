@@ -1,6 +1,5 @@
 package com.asap.openrun.global.config;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -12,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 public class AwsConfig {
-    @Value("${cloud.aws.credentials.access-key}")
+    @Value("${cloud.aws.credentials.accessKey}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secret-key}")
+    @Value("${cloud.aws.credentials.secretKey}")
     private String secretKey;
     @Value("${cloud.aws.region.static}")
     private String region;
