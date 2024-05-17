@@ -94,7 +94,6 @@ public class BrandService {
             .serialNumber(product.getSerialNumber())
             .productName(product.getProductName())
             .price(product.getPrice())
-            .thumbNail(product.getContent())
             .remainingStock(product.getRemainingStock(product.getStock(), product.getSalesStock()))
             .build())
         .collect(Collectors.toList());

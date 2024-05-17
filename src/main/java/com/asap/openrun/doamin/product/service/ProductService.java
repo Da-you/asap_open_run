@@ -8,10 +8,13 @@ import com.asap.openrun.doamin.product.repository.ProductRepository;
 import com.asap.openrun.global.annotation.LoginUser;
 import com.asap.openrun.global.common.error.BusinessException;
 import com.asap.openrun.global.common.error.ErrorCode;
+import com.asap.openrun.global.utils.storage.AwsFileService;
+import com.asap.openrun.global.utils.storage.FileNameUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -20,14 +23,21 @@ public class ProductService {
 
   private final ProductRepository productRepo;
   private final BrandRepository brandRepo;
+  private final AwsFileService awsFileService;
 
   @Transactional
-  public void registerProduct(String asapName, ProductRegisterRequest request) {
+  public void registerProduct(String asapName, ProductRegisterRequest request,
+      MultipartFile productImage) {
     Brand brand = brandRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     // TODO : 임시 주석 처리(어드민 유저 생성떄까지 잠시 보류)
 //    checkAuthorization(brand);
     existsBySerialNumber(request.getSerialNumber());
+    if (productImage != null) {
+      String originalFileUrl = awsFileService.uploadOrigin(productImage);
+      String resizedUrl = awsFileService.uploadResized(productImage);
+      request.setImageUrl(originalFileUrl, resizedUrl);
+    }
 
     productRepo.save(Product.of(brand, request));
   }
@@ -78,6 +88,33 @@ public class ProductService {
 
     product.updateStock(request.getAdditionalStock());
   }
+  @Transactional
+  public void updateProductImage(@LoginUser String asapName, String serialNumber,UpdateProductImage request,
+      MultipartFile productImage){
+      Brand brand = brandRepo.findByAsapName(asapName)
+          .orElseThrow(() -> new BusinessException(
+              ErrorCode.USER_NOT_FOUND));
+      Product product = productRepo.findByBrandAndSerialNumber(brand, serialNumber)
+          .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND));
+      String productImageUrl  = product.getThumbnailUrl();
+      String updatedImageUrl = request.getThumbnailUrl();
 
+    if (isDeleteSavedImage(productImageUrl, updatedImageUrl, productImage)) {
+      String key = FileNameUtils.getFileName(productImageUrl);
+      awsFileService.deleteOrigin(key);
+      awsFileService.deleteResized(key);
+      request.deleteImageUrl();
+    }
+    if (productImage != null) {
+      String originalFileUrl = awsFileService.uploadOrigin(productImage);
+      String resizedUrl = awsFileService.uploadResized(productImage);
+      request.setImageUrl(originalFileUrl, resizedUrl);
+    }
+  }
+  private boolean isDeleteSavedImage(String savedImageUrl, String updatedImageUrl,
+      MultipartFile productImage) {
+    return ((updatedImageUrl == null && savedImageUrl != null) ||
+        (savedImageUrl != null && productImage != null));
+  }
 
 }

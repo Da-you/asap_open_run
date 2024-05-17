@@ -11,7 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +38,10 @@ public class Product extends BaseTimeEntity {
   @Column(nullable = false, name = "product_name")
   private String productName;
 
+
+  private String thumbnailUrl;
+  private String resizedUrl;
+
   @Column(nullable = false)
   private Integer price;
 
@@ -43,12 +49,6 @@ public class Product extends BaseTimeEntity {
   private Integer stock;
 
   private Integer salesStock;
-
-
-  @Column(nullable = false)
-  private String address;
-
-  private String content;
 
   @Column(nullable = false)
   private LocalDateTime eventStartDate;
@@ -60,16 +60,16 @@ public class Product extends BaseTimeEntity {
 
   @Builder
   private Product(Brand brand, String serialNumber, String productName, Integer price,
-      Integer stock, Integer salesStock,
-      String address, String content, LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
+      Integer stock, String thumbnailUrl, String resizedUrl,
+      LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
     this.brand = brand;
     this.serialNumber = serialNumber;
     this.productName = productName;
+    this.thumbnailUrl = thumbnailUrl;
+    this.resizedUrl = resizedUrl;
     this.price = price;
     this.stock = stock;
     this.salesStock = 0;
-    this.address = address;
-    this.content = content;
     this.eventStartDate = eventStartDate;
     this.eventEndDate = eventEndDate;
   }
@@ -80,10 +80,9 @@ public class Product extends BaseTimeEntity {
         .brand(brand)
         .serialNumber(request.getSerialNumber())
         .productName(request.getProductName())
+        .thumbnailUrl(request.getThumbnailUrl())
         .price(request.getPrice())
         .stock(request.getStock())
-        .address(request.getAddress())
-        .content(request.getContent())
         .eventStartDate(request.getEventStartDate())
         .eventEndDate(request.getEventEndDate())
         .build();
@@ -104,15 +103,16 @@ public class Product extends BaseTimeEntity {
     return stock - salesStock;
   }
 
-  public void updateProductName(String productName){
+  public void updateProductName(String productName) {
     this.productName = productName;
   }
-  public void updateProductPrice(Integer price){
+
+  public void updateProductPrice(Integer price) {
     this.price = price;
   }
+
   public void updateStock(Integer additionalStock
-  ){
+  ) {
     this.stock += additionalStock;
   }
-
 }
