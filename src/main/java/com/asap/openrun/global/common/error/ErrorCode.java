@@ -17,10 +17,12 @@ public enum ErrorCode {
   DUPLICATE_NICKNAME(CONFLICT, 40302, "duplicate nickname"),
   DUPLICATE_PHONE_NUMBER(CONFLICT, 40303, "duplicate phone number"),
   SERIALNUMBER_ALREADY_EXISTS(CONFLICT, 40304, "serial number is already exists"),
+  LIKE_ALREADY_EXISTS(CONFLICT,40305 ,"this product is already like"),
   // 404
   USER_NOT_FOUND(NOT_FOUND, 40401, "user not found"),
   PRODUCT_IS_NOT_FOUND(NOT_FOUND, 40402, "product is not found"),
   HISTORY_IS_NOT_FOUND(NOT_FOUND, 40403, "history is not found"),
+  NOT_FOUNT_RESOURCE(NOT_FOUND,40404 ,"not found this resource"),
   // server Error
   SERVER_ERROR(INTERNAL_SERVER_ERROR, 50001, "unknown error"),
   // 401

@@ -62,7 +62,7 @@ public class UserApiController {
           + "제약조건으로는 상품의 존재 유무확인, 티켓팅 오픈일정, 재고 확인을 거쳐 진행을 합니다."
   )
   @PostMapping("/apply/{serialNumber}")
-  public void createTicketing(String asapName, @PathVariable String serialNumber) {
+  public void createTicketing(@LoginUser String asapName, @PathVariable String serialNumber) {
     userTicketService.createTicketing(asapName, serialNumber);
   }
 
