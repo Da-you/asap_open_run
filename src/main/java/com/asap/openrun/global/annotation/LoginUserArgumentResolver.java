@@ -36,7 +36,6 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
 //    if (session == null) {
 //      return null;
 //    }
-    log.info("접속자 세션 :", userService.getLoginUser());
     return userService.getLoginUser();
   }
 }

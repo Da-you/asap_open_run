@@ -37,7 +37,8 @@ public class BrandService {
     existsByBrandName(request.getAsapName());
     existsByBusinessNumber(request.getBusinessNumber());
     request.passwordEncoded(encoder);
-    brandRepo.save(Brand.of(request));
+    Brand brand = Brand.of(request);
+    brandRepo.save(brand);
   }
 
   private void existsByAsapName(String asapName) {

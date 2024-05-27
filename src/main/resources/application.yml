@@ -43,6 +43,10 @@ cloud:
 ---
 spring:
   servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
     session:
       timeout: 3600
   config:
@@ -57,7 +61,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
       properties:
         hibernate:
           format_sql: true
@@ -66,13 +70,16 @@ spring:
 
 cloud:
   aws:
-    s3:
-      bucket: ${IMAGE_BUCKET}
-    stack.auto: false
-    region.static: ap-northeast-2
     credentials:
       accessKey: ${ACCESS_KEY}
       secretKey: ${SECRET_KEY}
+    s3:
+      bucket: ${IMAGE_BUCKET}
+      resize-bucket: ${RESIZE_BUCKET}
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
 
 
 ---

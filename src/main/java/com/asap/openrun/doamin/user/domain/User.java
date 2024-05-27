@@ -27,9 +27,9 @@ public class User extends UserBase {
   private String phoneNumber;
 
   @Builder
-  private User(String name, String asapName, String password, String nickname,
+  private User(Long id,String name, String asapName, String password, String nickname,
       String phoneNumber) {
-    super(name, asapName, password, Role.USER);
+    super(id,name, asapName, password, Role.USER);
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
 

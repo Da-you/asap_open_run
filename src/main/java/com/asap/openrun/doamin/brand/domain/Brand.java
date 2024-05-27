@@ -26,16 +26,15 @@ public class Brand extends UserBase {
   private boolean isAuth;
 
   @Builder
-  private Brand(String name, String asapName, String password, String brandName,
+  private Brand(Long id,String name, String asapName, String password, String brandName,
       String businessNumber,
       boolean isAuth) {
-    super(name, asapName, password, Role.BRAND);
+    super(id,name, asapName, password, Role.BRAND);
     this.brandName = brandName;
     this.businessNumber = businessNumber;
     this.isAuth = isAuth;
   }
 
-  @Builder
   public static Brand of(BrandCreateRequest request) {
     return Brand.builder()
         .name(request.getName())

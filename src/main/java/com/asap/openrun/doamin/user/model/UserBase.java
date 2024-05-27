@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 public abstract class UserBase extends BaseTimeEntity {
 
   @Id
-  @Column(nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
@@ -40,12 +39,4 @@ public abstract class UserBase extends BaseTimeEntity {
 
   @Enumerated(value = EnumType.STRING)
   private Role role;
-
-  protected UserBase(String name, String asapName, String password, Role role) {
-    this.name = name;
-    this.asapName = asapName;
-    this.password = password;
-    this.role = role;
-  }
-
 }

@@ -34,9 +34,9 @@ public class UserTicketService {
     if (product== null){
       throw new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND);
     }
-    if (!product.isOpen()) {
-      throw new BusinessException(ErrorCode.EVENT_IS_NOT_OPEN); // 티켓팅 오픈전
-    }
+//    if (!product.isOpen()) {
+//      throw new BusinessException(ErrorCode.EVENT_IS_NOT_OPEN); // 티켓팅 오픈전
+//    }
     if (product.getStock() == 0) {
       throw new BusinessException(ErrorCode.SERVER_ERROR);
     }
