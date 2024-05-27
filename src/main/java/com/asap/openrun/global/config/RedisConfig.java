@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RedisConfig {
 
-  private static final String REDISSON_HOST_PREFIX = "/redis://";
+  private static final String REDISSON_HOST_PREFIX = "redis://";
 
   @Bean
   public RedissonClient redissonClient() {

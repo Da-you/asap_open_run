@@ -7,6 +7,7 @@ import com.asap.openrun.doamin.user.domain.UserProductHistory;
 import com.asap.openrun.doamin.user.dto.response.UserResponse.UserTicket;
 import com.asap.openrun.doamin.user.repository.UserHistoryRepository;
 import com.asap.openrun.doamin.user.repository.UserRepository;
+import com.asap.openrun.global.annotation.RedissonLock;
 import com.asap.openrun.global.common.error.BusinessException;
 import com.asap.openrun.global.common.error.ErrorCode;
 import java.util.List;
@@ -24,14 +25,14 @@ public class UserTicketService {
   private final UserRepository userRepo;
   private final ProductRepository productRepo;
 
-
+  @RedissonLock(value = "#serialNumber")
   @Transactional
   public void createTicketing(String asapName, String serialNumber) {
     User user = userRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     Product product = productRepo.findBySerialNumberWithPessimisticLock(serialNumber);
-    if (product== null){
+    if (product == null) {
       throw new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND);
     }
 //    if (!product.isOpen()) {
