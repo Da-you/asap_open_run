@@ -1,4 +1,11 @@
 spring:
+  server:
+    tomcat:
+      accept-count: 500
+      threads:
+        min-spare: 500
+        max: 1000
+      max-connections: 25000
   servlet:
     multipart:
       enabled: true
@@ -42,6 +49,13 @@ cloud:
 
 ---
 spring:
+  server:
+    tomcat:
+      accept-count: 500
+      threads:
+        min-spare: 500
+        max: 1000
+      max-connections: 25000
   servlet:
     multipart:
       enabled: true
