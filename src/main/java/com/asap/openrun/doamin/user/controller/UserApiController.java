@@ -2,6 +2,7 @@ package com.asap.openrun.doamin.user.controller;
 
 import com.asap.openrun.doamin.user.dto.request.UserRequest.*;
 import com.asap.openrun.doamin.user.dto.response.UserResponse.*;
+import com.asap.openrun.doamin.user.service.RedisService;
 import com.asap.openrun.doamin.user.service.UserService;
 import com.asap.openrun.doamin.user.service.UserTicketService;
 import com.asap.openrun.global.annotation.LoginUser;
@@ -23,6 +24,7 @@ public class UserApiController {
 
   private final UserService userService;
   private final UserTicketService userTicketService;
+  private final RedisService redisService;
 
 
   @Operation(
@@ -63,7 +65,8 @@ public class UserApiController {
   )
   @PostMapping("/apply/{serialNumber}")
   public void createTicketing(@LoginUser String asapName, @PathVariable String serialNumber) {
-    userTicketService.createTicketing(asapName, serialNumber);
+//    userTicketService.createTicketing(asapName, serialNumber);
+    userTicketService.createTicketingByRedis(asapName,serialNumber);
   }
 
   @Operation(
@@ -145,5 +148,10 @@ public class UserApiController {
   public void updatedPassword(@LoginUser String asapName,
       @RequestBody UpdatePasswordRequest request) {
     userService.updatedPassword(asapName, request);
+  }
+
+  @PostMapping("/redis")
+  public void redisTest(@LoginUser String asapName){
+    redisService.openProduct();
   }
 }

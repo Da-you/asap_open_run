@@ -1,5 +1,6 @@
 package com.asap.openrun.doamin.user.service;
 
+import com.asap.openrun.doamin.product.RedisRepository;
 import com.asap.openrun.doamin.product.domain.Product;
 import com.asap.openrun.doamin.product.repository.ProductRepository;
 import com.asap.openrun.doamin.user.domain.User;
@@ -13,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -23,6 +25,7 @@ public class UserTicketService {
   private final UserHistoryRepository userHistoryRepo;
   private final UserRepository userRepo;
   private final ProductRepository productRepo;
+  private final RedisRepository redisRepo;
 
 
   @Transactional
@@ -31,7 +34,7 @@ public class UserTicketService {
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     Product product = productRepo.findBySerialNumberWithPessimisticLock(serialNumber);
-    if (product== null){
+    if (product == null) {
       throw new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND);
     }
 //    if (!product.isOpen()) {
@@ -41,7 +44,39 @@ public class UserTicketService {
       throw new BusinessException(ErrorCode.SERVER_ERROR);
     }
     product.decrease();
-    userHistoryRepo.save(UserProductHistory.from(user, product));
+    userHistoryRepo.saveAndFlush(UserProductHistory.from(user, product));
+  }
+
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  public void createTicketingByRedis(String asapName, String serialNumber) {
+    User user = userRepo.findByAsapName(asapName)
+        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+    Boolean hasLeftStock = redisRepo.hasStockInRedis(serialNumber);
+    if (hasLeftStock) {
+      decreaseStockInRedis(serialNumber);
+    } else {
+      decreaseStockInDB(serialNumber);
+    }
+
+    userHistoryRepo.save(UserProductHistory.form(user, serialNumber));
+  }
+
+  private void decreaseStockInDB(String serialNumber) {
+    Product product = productRepo.findBySerialNumberWithPessimisticLock(serialNumber);
+    if (product.getStock() - 1 < 0) {
+      throw new BusinessException(ErrorCode.PRODUCT_IS_SOLD_OUT);
+    }
+    product.decrease();
+    productRepo.save(product);
+
+  }
+
+  private void decreaseStockInRedis(String serialNumber) {
+    Boolean success = redisRepo.decreaseStock(serialNumber, 1);
+    if (!success) {
+      throw new BusinessException(ErrorCode.PRODUCT_IS_SOLD_OUT);
+    }
   }
 
   @Transactional
