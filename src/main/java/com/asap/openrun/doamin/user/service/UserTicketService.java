@@ -1,15 +1,19 @@
 package com.asap.openrun.doamin.user.service;
 
+import static com.asap.openrun.global.utils.encryption.TicketNumberService.ticketNumber;
+
 import com.asap.openrun.doamin.product.RedisRepository;
 import com.asap.openrun.doamin.product.domain.Product;
 import com.asap.openrun.doamin.product.repository.ProductRepository;
 import com.asap.openrun.doamin.user.domain.User;
 import com.asap.openrun.doamin.user.domain.UserProductHistory;
 import com.asap.openrun.doamin.user.dto.response.UserResponse.UserTicket;
+import com.asap.openrun.doamin.user.dto.response.UserResponse.UserTicketList;
 import com.asap.openrun.doamin.user.repository.UserHistoryRepository;
 import com.asap.openrun.doamin.user.repository.UserRepository;
 import com.asap.openrun.global.common.error.BusinessException;
 import com.asap.openrun.global.common.error.ErrorCode;
+import com.asap.openrun.global.utils.encryption.TicketNumberService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,26 +31,6 @@ public class UserTicketService {
   private final ProductRepository productRepo;
   private final RedisRepository redisRepo;
 
-
-  @Transactional
-  public void createTicketing(String asapName, String serialNumber) {
-    User user = userRepo.findByAsapName(asapName)
-        .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-    Product product = productRepo.findBySerialNumberWithPessimisticLock(serialNumber);
-    if (product == null) {
-      throw new BusinessException(ErrorCode.PRODUCT_IS_NOT_FOUND);
-    }
-//    if (!product.isOpen()) {
-//      throw new BusinessException(ErrorCode.EVENT_IS_NOT_OPEN); // 티켓팅 오픈전
-//    }
-    if (product.getStock() == 0) {
-      throw new BusinessException(ErrorCode.SERVER_ERROR);
-    }
-    product.decrease();
-    userHistoryRepo.saveAndFlush(UserProductHistory.from(user, product));
-  }
-
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public void createTicketingByRedis(String asapName, String serialNumber) {
     User user = userRepo.findByAsapName(asapName)
@@ -58,8 +42,7 @@ public class UserTicketService {
     } else {
       decreaseStockInDB(serialNumber);
     }
-
-    userHistoryRepo.save(UserProductHistory.form(user, serialNumber));
+    userHistoryRepo.save(UserProductHistory.of(user, serialNumber, ticketNumber()));
   }
 
   private void decreaseStockInDB(String serialNumber) {
@@ -97,22 +80,18 @@ public class UserTicketService {
 
   // 내 예메 내역 리스트
   @Transactional(readOnly = true)
-  public List<UserTicket> getHistories(String asapName) {
+  public List<UserTicketList> getHistories(String asapName) {
     User user = userRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     List<UserProductHistory> all = userHistoryRepo.findAllByUser(user);
 
     return all.stream()
-        .map(history -> new UserTicket(
+        .map(history -> new UserTicketList(
             history.getId(),
-            history.getProduct().getBrand().getBrandName(),
-            history.getProduct().getProductName(),
-            history.getProduct().isOpen(),
-            history.getProduct().getEventStartDate(),
-            history.getProduct().getEventEndDate()
+            history.getTicketNumber(),
+            history.isReceived()
         ))
         .toList();
-
   }
 
   // 내 예매 내역 단건 조회
@@ -122,13 +101,13 @@ public class UserTicketService {
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     UserProductHistory history = getUserProductHistory(historyId, user);
+    Product product = productRepo.findBySerialNumber(history.getSerialNumber());
 
     return UserTicket.builder()
-        .brandName(history.getProduct().getBrand().getBrandName())
-        .productName(history.getProduct().getProductName())
-        .isOpen(history.getProduct().isOpen())
-        .eventStartDate(history.getProduct().getEventStartDate())
-        .eventEndDate(history.getProduct().getEventStartDate())
+        .productName(product.getProductName())
+        .isOpen(product.isOpen())
+        .eventStartDate(product.getEventStartDate())
+        .eventEndDate(product.getEventEndDate())
         .build();
   }
 
