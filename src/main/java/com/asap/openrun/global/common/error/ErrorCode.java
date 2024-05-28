@@ -27,7 +27,7 @@ public enum ErrorCode {
   SERVER_ERROR(INTERNAL_SERVER_ERROR, 50001, "unknown error"),
   // 401
   UNAUTHORIZED_BRAND(UNAUTHORIZED, 40101, "unauthorized brand"),
-  ;
+  EXISTED_CACHE(CONFLICT,40306 , "이미 캐시가 존재합니다.");
 
   private final HttpStatus status;
   private final Integer code;

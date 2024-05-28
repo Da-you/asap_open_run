@@ -49,6 +49,11 @@ cloud:
 
 ---
 spring:
+  redis:
+    host: 127.0.01
+    port: 6379
+    cache:
+      type: redis
   server:
     tomcat:
       accept-count: 500

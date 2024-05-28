@@ -33,6 +33,7 @@ public class UserProductHistory extends BaseTimeEntity {
   @JoinColumn(name = "product_id")
   private Product product;
 
+  private String serialNumber;
 
   private String ticketNumber;
 
@@ -43,6 +44,17 @@ public class UserProductHistory extends BaseTimeEntity {
   private UserProductHistory(User user, Product product) {
     this.user = user;
     this.product = product;
+  }
+
+  private UserProductHistory(User user, String serialNumber) {
+    this.user = user;
+    this.serialNumber = serialNumber;
+  }
+  public static  UserProductHistory form(User user, String serialNumber){
+    UserProductHistory history = new UserProductHistory();
+    history.user = user;
+    history.serialNumber = serialNumber;
+    return history;
   }
 
   public static UserProductHistory from(User user, Product product) {

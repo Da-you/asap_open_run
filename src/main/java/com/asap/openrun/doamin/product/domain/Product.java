@@ -115,4 +115,8 @@ public class Product extends BaseTimeEntity {
   ) {
     this.stock += additionalStock;
   }
+
+  public void setStock(Integer leftStock) {
+    this.stock = leftStock;
+  }
 }
