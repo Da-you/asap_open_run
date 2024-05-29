@@ -53,8 +53,8 @@
 - 등록된 브랜드를 해제할 수 있는 기능이 필요하다.
 
 # ⚡Issue Posting
-- 상품 티켓팅시 동시성 문제 해결
-- 비관적 락을 이용한 동시성 제어시 tps성능 개선
+- [상품 티켓팅시 동시성 문제 해결](https://velog.io/@fit_coder/%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)
+- [동시성 제어와 tps성능 개선](https://velog.io/@fit_coder/%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0)
 - AWS lamda를 이용한 이미지 리사이징
 - 커스텀 어노테이션을 이용해 현재 사용자 정보 불러오기
 - CI/CD를 이용해 배포시 다양한 profile 환경에서 배포 시도시 설정을 찾지 못하는 문제 발생
