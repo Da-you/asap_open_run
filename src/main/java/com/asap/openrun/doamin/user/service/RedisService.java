@@ -20,11 +20,24 @@ public class RedisService {
   private final RedisTemplate<String, Integer> redisTemplate;
 
 
-  public void openProduct() {
-    List<Product> products = productRepository.findAll();
+  @Scheduled(cron = "0 0 0 * * ?")
+  public void closeProduct() {
+    List<Product> products = productRepository.findAllByEventEndDate();
     for (Product product : products) {
+      product.eventOpen(false);
+      redisRepository.deleteStockInRedis(product);
+      log.info("{}번 상품 판매 일정이 {}로 수정되었습니다.", product.getSerialNumber(), product.isOpen());
+    }
+    productRepository.saveAll(products);
+  }
+
+  @Scheduled(cron = "0 0 23 * * ?")
+  public void openProduct() {
+    List<Product> products = productRepository.findAllByEventStartDate();
+    for (Product product : products) {
+      product.eventOpen(true);
       redisRepository.saveProductStockToRedis(product);
-      log.info("{}번 공연이 예매가능으로 수정되었습니다.", product.getSerialNumber());
+      log.info("{}번 상품 판매 일정이 {}로 수정되었습니다.", product.getSerialNumber(), product.isOpen());
     }
     productRepository.saveAll(products);
   }

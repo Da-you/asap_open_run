@@ -95,11 +95,12 @@ public class BrandService {
             .serialNumber(product.getSerialNumber())
             .productName(product.getProductName())
             .price(product.getPrice())
-            .remainingStock(product.getRemainingStock(product.getStock(), product.getSalesStock()))
+            .remainingStock(product.getLeftStock())
             .build())
         .collect(Collectors.toList());
   }
 
+  @Transactional
   public void updateBrandName(String asapName, UpdateBrandNameRequest request) {
     Brand brand = brandRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -111,6 +112,7 @@ public class BrandService {
     brand.updatedBrandName(request.getBrandName());
   }
 
+  @Transactional
   public void updatePassword(String asapName, UpdatePasswordRequest request) {
     Brand brand = brandRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));

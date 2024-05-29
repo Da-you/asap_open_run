@@ -23,4 +23,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   List<Product> findAllByBrand(Brand brand);
 
   Optional<Product> findByBrandAndSerialNumber(Brand brand, String serialNumber);
+
+  @Query("SELECT p from Product p where DATE(p.eventStartDate) = CURRENT_DATE")
+  List<Product> findAllByEventStartDate();
+
+  @Query("SELECT p from Product p where DATE(p.eventEndDate) = CURRENT_DATE")
+  List<Product> findAllByEventEndDate();
 }

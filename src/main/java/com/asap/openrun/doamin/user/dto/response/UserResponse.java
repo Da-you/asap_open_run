@@ -13,12 +13,21 @@ public class UserResponse {
   @Getter
   @NoArgsConstructor(access = AccessLevel.PROTECTED)
   @AllArgsConstructor
+  public static class UserTicketList {
+
+    private Long historyId;
+    private String ticketNumber;
+    private boolean isReceived;
+  }
+
+  @Builder
+  @Getter
+  @NoArgsConstructor(access = AccessLevel.PROTECTED)
+  @AllArgsConstructor
   public static class UserTicket {
 
     private Long historyId;
-    private String brandName;
     private String productName;
-    // 예매 번호
     private boolean isOpen;
     private LocalDateTime eventStartDate;
     private LocalDateTime eventEndDate;

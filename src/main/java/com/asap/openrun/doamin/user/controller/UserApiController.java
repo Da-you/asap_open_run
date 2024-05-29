@@ -65,7 +65,6 @@ public class UserApiController {
   )
   @PostMapping("/apply/{serialNumber}")
   public void createTicketing(@LoginUser String asapName, @PathVariable String serialNumber) {
-//    userTicketService.createTicketing(asapName, serialNumber);
     userTicketService.createTicketingByRedis(asapName,serialNumber);
   }
 
@@ -75,7 +74,7 @@ public class UserApiController {
           + "응답으로는 예매내역ID, 상품을 등록한 브랜드 이름, 상품 이름, 판매가 open된 상품인지, 행사 일정을 리스트로 보여줍니다."
   )
   @GetMapping("/histories")
-  public ApiResponse<List<UserTicket>> getHistories(@LoginUser String asapName) {
+  public ApiResponse<List<UserTicketList>> getHistories(@LoginUser String asapName) {
     return ApiResponse.ok(userTicketService.getHistories(asapName));
   }
 

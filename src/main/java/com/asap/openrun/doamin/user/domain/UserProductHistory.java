@@ -1,6 +1,5 @@
 package com.asap.openrun.doamin.user.domain;
 
-import com.asap.openrun.doamin.product.domain.Product;
 import com.asap.openrun.global.common.response.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,38 +28,25 @@ public class UserProductHistory extends BaseTimeEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "product_id")
-  private Product product;
-
   private String serialNumber;
-
+  @Column(nullable = false, unique = true)
   private String ticketNumber;
 
   private boolean isDeleted = false;
 
   private boolean isReceived = false;
 
-  private UserProductHistory(User user, Product product) {
-    this.user = user;
-    this.product = product;
-  }
-
-  private UserProductHistory(User user, String serialNumber) {
+  private UserProductHistory(User user, String serialNumber, String ticketNumber) {
     this.user = user;
     this.serialNumber = serialNumber;
+    this.ticketNumber = ticketNumber;
   }
-  public static  UserProductHistory form(User user, String serialNumber){
+
+  public static UserProductHistory of(User user, String serialNumber, String ticketNumber) {
     UserProductHistory history = new UserProductHistory();
     history.user = user;
     history.serialNumber = serialNumber;
-    return history;
-  }
-
-  public static UserProductHistory from(User user, Product product) {
-    UserProductHistory history = new UserProductHistory();
-    history.user = user;
-    history.product = product;
+    history.ticketNumber = ticketNumber;
     return history;
   }
 
