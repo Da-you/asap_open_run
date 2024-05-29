@@ -38,7 +38,6 @@ public class Product extends BaseTimeEntity {
   @Column(nullable = false, name = "product_name")
   private String productName;
 
-
   private String thumbnailUrl;
   private String resizedUrl;
 
@@ -48,7 +47,7 @@ public class Product extends BaseTimeEntity {
   @Column(nullable = false)
   private Integer stock;
 
-  private Integer salesStock;
+  private Integer leftStock;
 
   @Column(nullable = false)
   private LocalDateTime eventStartDate;
@@ -69,7 +68,7 @@ public class Product extends BaseTimeEntity {
     this.resizedUrl = resizedUrl;
     this.price = price;
     this.stock = stock;
-    this.salesStock = 0;
+    this.leftStock = stock;
     this.eventStartDate = eventStartDate;
     this.eventEndDate = eventEndDate;
   }
@@ -90,17 +89,13 @@ public class Product extends BaseTimeEntity {
 
 
   public void decrease() {
-    if (this.stock == 0) {
+    if (this.leftStock == 0) {
       throw new IllegalArgumentException("매진 된 상품 입니다.");
     }
-    this.stock--;
-    this.salesStock++;
+    this.leftStock--;
   }
-
-  public Integer getRemainingStock(Integer stock, Integer salesStock) {
-    stock = this.stock;
-    salesStock = this.getSalesStock();
-    return stock - salesStock;
+  public void  increase(){
+    this.leftStock++;
   }
 
   public void updateProductName(String productName) {
@@ -114,9 +109,14 @@ public class Product extends BaseTimeEntity {
   public void updateStock(Integer additionalStock
   ) {
     this.stock += additionalStock;
+    this.leftStock += additionalStock;
   }
 
   public void setStock(Integer leftStock) {
     this.stock = leftStock;
+  }
+
+  public void eventOpen(boolean isOpen) {
+    this.isOpen = isOpen;
   }
 }

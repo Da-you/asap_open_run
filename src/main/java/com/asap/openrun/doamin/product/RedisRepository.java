@@ -29,7 +29,8 @@ public class RedisRepository {
           "else " +
           "  return false " +
           "end";
-  private final RedisScript<Boolean> decreaseStockScript = new DefaultRedisScript<>(DECREASE_STOCK, Boolean.class);
+  private final RedisScript<Boolean> decreaseStockScript = new DefaultRedisScript<>(DECREASE_STOCK,
+      Boolean.class);
 
   public void saveProductStockToRedis(Product product) {
     String key = "ls" + product.getSerialNumber();
@@ -57,7 +58,11 @@ public class RedisRepository {
 
   public Boolean hasStockInRedis(String serialNumber) {
     String key = "ls" + serialNumber;
-    return redisTemplate.hasKey(key);
+    try {
+      return redisTemplate.hasKey(key);
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public Boolean decreaseStock(String serialNumber, int count) {
@@ -65,22 +70,32 @@ public class RedisRepository {
     return redisTemplate.execute(decreaseStockScript, Collections.singletonList(key), count);
   }
 
+  // 티켓 취소시
   public void incrementStock(String serialNumber, int count) {
     String key = "ls" + serialNumber;
     redisTemplate.opsForValue().increment(key, count);
   }
 
-  public void deleteStockInRedis(String serialNumber) {
-    String key = "ls" + serialNumber;
+  public void deleteStockInRedis(Product product) {
+    String key = "ls" + product.getSerialNumber();
     if (!redisTemplate.hasKey(key)) {
       throw new BusinessException(ErrorCode.EXISTED_CACHE);
     }
     saveProductStockFromRedis();
     redisTemplate.delete(key);
+    refreshProduct(product);
   }
 
-  public Set<String> findAllKeysInRedis() {
-    return redisTemplate.keys("ls*");
+  public void refreshProduct(Product product) {
+    Integer accurateStock = userHistoryRepository.sumCountBySerialNumber(product.getSerialNumber());
+    if (accurateStock == null) {
+      accurateStock = 0;
+    }
+    Integer accurateLeftStock = product.getStock() - accurateStock;
+    product.setStock(accurateLeftStock);
+    if (hasStockInRedis(product.getSerialNumber())) {
+      String key = "ls" + product.getSerialNumber();
+      redisTemplate.opsForValue().set(key, accurateLeftStock);
+    }
   }
-
 }

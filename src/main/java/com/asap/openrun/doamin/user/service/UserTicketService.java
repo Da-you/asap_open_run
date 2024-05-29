@@ -116,9 +116,15 @@ public class UserTicketService {
   public void cancelTicket(String asapName, Long historyId) {
     User user = userRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
     UserProductHistory history = getUserProductHistory(historyId, user);
 
+    boolean hasLeftStock = redisRepo.hasStockInRedis(history.getSerialNumber());
+    if (hasLeftStock){
+      redisRepo.incrementStock(history.getSerialNumber(), 1);
+    }else {
+      Product product = productRepo.findBySerialNumber(history.getSerialNumber());
+      product.increase();
+    }
     history.softDelete();
   }
 }

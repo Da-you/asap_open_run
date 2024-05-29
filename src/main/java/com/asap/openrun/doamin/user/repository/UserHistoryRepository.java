@@ -12,5 +12,6 @@ public interface UserHistoryRepository extends JpaRepository<UserProductHistory,
 
   List<UserProductHistory> findAllByUser(User user);
   UserProductHistory findByUserAndId(User user, Long id);
-
+  @Query(value = "SELECT COUNT(*) FROM user_product_history WHERE serial_number = :serialNumber", nativeQuery = true)
+  Integer sumCountBySerialNumber(@Param("serialNumber") String serialNumber);
 }

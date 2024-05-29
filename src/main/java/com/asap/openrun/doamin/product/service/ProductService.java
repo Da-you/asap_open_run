@@ -30,8 +30,6 @@ public class ProductService {
       MultipartFile productImage) {
     Brand brand = brandRepo.findByAsapName(asapName)
         .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-    // TODO : 임시 주석 처리(어드민 유저 생성떄까지 잠시 보류)
-//    checkAuthorization(brand);
     existsBySerialNumber(request.getSerialNumber());
     if (productImage != null) {
       String originalFileUrl = awsFileService.uploadOrigin(productImage);
@@ -45,12 +43,6 @@ public class ProductService {
   private void existsBySerialNumber(String serialNumber) {
     if (productRepo.existsBySerialNumber(serialNumber)) {
       throw new BusinessException(ErrorCode.SERIALNUMBER_ALREADY_EXISTS);
-    }
-  }
-
-  private static void checkAuthorization(Brand brand) {
-    if (!brand.isAuth()) {
-      throw new BusinessException(ErrorCode.UNAUTHORIZED_BRAND);
     }
   }
 
