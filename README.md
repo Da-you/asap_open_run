@@ -55,6 +55,6 @@
 # ⚡Issue Posting
 - [상품 티켓팅시 동시성 문제 해결](https://velog.io/@fit_coder/%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%9D%B4%EC%8A%88)
 - [동시성 제어와 tps성능 개선](https://velog.io/@fit_coder/%EB%B9%84%EA%B4%80%EC%A0%81-%EB%9D%BD-%EC%82%AC%EC%9A%A9%EC%8B%9C-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0)
-- AWS lamda를 이용한 이미지 리사이징
+- [AWS lamda를 이용한 이미지 리사이징](https://velog.io/@fit_coder/AWS%EB%9E%8C%EB%8B%A4%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95)
 - 커스텀 어노테이션을 이용해 현재 사용자 정보 불러오기
 - CI/CD를 이용해 배포시 다양한 profile 환경에서 배포 시도시 설정을 찾지 못하는 문제 발생
